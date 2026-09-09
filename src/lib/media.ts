@@ -44,7 +44,7 @@ export async function uploadMedia(eventId: string, file: File): Promise<string> 
   const path = `${eventId}/${crypto.randomUUID()}.${ext}`;
   const { error } = await supabase.storage.from(MEDIA_BUCKET).upload(path, file, {
     cacheControl: "3600",
-    contentType: file.type || undefined,
+    contentType: file.type || "application/octet-stream",
   });
   if (error) throw error;
   return path;
