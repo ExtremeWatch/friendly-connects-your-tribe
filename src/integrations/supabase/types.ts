@@ -14,7 +14,158 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      events: {
+        Row: {
+          code: string
+          cover_url: string | null
+          created_at: string
+          event_date: string | null
+          host_id: string
+          id: string
+          is_closed: boolean
+          name: string
+          welcome_message: string | null
+        }
+        Insert: {
+          code: string
+          cover_url?: string | null
+          created_at?: string
+          event_date?: string | null
+          host_id: string
+          id?: string
+          is_closed?: boolean
+          name: string
+          welcome_message?: string | null
+        }
+        Update: {
+          code?: string
+          cover_url?: string | null
+          created_at?: string
+          event_date?: string | null
+          host_id?: string
+          id?: string
+          is_closed?: boolean
+          name?: string
+          welcome_message?: string | null
+        }
+        Relationships: []
+      }
+      guests: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guests_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      likes: {
+        Row: {
+          created_at: string
+          guest_id: string
+          id: string
+          post_id: string
+        }
+        Insert: {
+          created_at?: string
+          guest_id: string
+          id?: string
+          post_id: string
+        }
+        Update: {
+          created_at?: string
+          guest_id?: string
+          id?: string
+          post_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "likes_guest_id_fkey"
+            columns: ["guest_id"]
+            isOneToOne: false
+            referencedRelation: "guests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      posts: {
+        Row: {
+          author_name: string
+          caption: string | null
+          created_at: string
+          event_id: string
+          guest_id: string | null
+          id: string
+          is_hidden: boolean
+          kind: string
+          media_url: string | null
+        }
+        Insert: {
+          author_name: string
+          caption?: string | null
+          created_at?: string
+          event_id: string
+          guest_id?: string | null
+          id?: string
+          is_hidden?: boolean
+          kind: string
+          media_url?: string | null
+        }
+        Update: {
+          author_name?: string
+          caption?: string | null
+          created_at?: string
+          event_id?: string
+          guest_id?: string | null
+          id?: string
+          is_hidden?: boolean
+          kind?: string
+          media_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "posts_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "posts_guest_id_fkey"
+            columns: ["guest_id"]
+            isOneToOne: false
+            referencedRelation: "guests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
