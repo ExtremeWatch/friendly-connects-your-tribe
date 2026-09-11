@@ -29,6 +29,13 @@ function Landing() {
     <div className="min-h-screen bg-background">
       <header className="mx-auto flex max-w-5xl items-center justify-between px-5 py-6">
         <span className="font-display text-xl font-semibold tracking-tight">Tifkira</span>
+        <nav className="flex items-center gap-2">
+        <Button asChild variant="ghost" className="rounded-full">
+          <Link to="/how-it-works">How it works</Link>
+        </Button>
+        <Button asChild variant="ghost" className="rounded-full">
+          <Link to="/faq">FAQ</Link>
+        </Button>
         {user ? (
           <Button asChild variant="secondary" className="rounded-full">
             <Link to="/dashboard">My events</Link>

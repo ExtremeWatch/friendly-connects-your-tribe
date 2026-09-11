@@ -144,6 +144,27 @@ function EventAdmin() {
             {event.is_closed ? <LockOpen className="size-4" /> : <Lock className="size-4" />}
             {event.is_closed ? "Reopen album" : "Close album"}
           </Button>
+          <Button
+            variant="secondary"
+            className="rounded-full"
+            disabled={!!zipping || !posts?.some((p) => p.media_url)}
+            onClick={async () => {
+              try {
+                setZipping("Preparing…");
+                await downloadAlbum(event!.name, posts ?? [], (done, total) =>
+                  setZipping(`${done} / ${total}`),
+                );
+                toast.success("Album downloaded");
+              } catch {
+                toast.error("Could not build the download");
+              } finally {
+                setZipping(null);
+              }
+            }}
+          >
+            {zipping ? <Loader2 className="size-4 animate-spin" /> : <Download className="size-4" />}
+            {zipping ? `Downloading ${zipping}` : "Download album"}
+          </Button>
           <Button variant="destructive" className="rounded-full" onClick={deleteEvent}>
             <Trash2 className="size-4" /> Delete event
           </Button>
