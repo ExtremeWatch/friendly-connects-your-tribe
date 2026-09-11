@@ -2,10 +2,11 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
-import { ArrowLeft, Copy, Eye, EyeOff, Lock, LockOpen, Trash2 } from "lucide-react";
+import { ArrowLeft, Copy, Download, Eye, EyeOff, Loader2, Lock, LockOpen, MonitorPlay, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { albumUrl } from "@/lib/event-code";
+import { downloadAlbum } from "@/lib/download";
 import { Button } from "@/components/ui/button";
 import { MediaImage, MediaVideo } from "@/components/album/Media";
 import type { EventRow, PostRow } from "@/components/album/types";
@@ -27,6 +28,7 @@ function EventAdmin() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [qr, setQr] = useState<string | null>(null);
+  const [zipping, setZipping] = useState<string | null>(null);
 
   const { data: event } = useQuery({
     queryKey: ["event-admin", id],
@@ -128,6 +130,11 @@ function EventAdmin() {
                   Open album
                 </Link>
               </Button>
+              <Button asChild variant="secondary" className="rounded-full">
+                <Link to="/slideshow/$code" params={{ code: event.code }} target="_blank">
+                  <MonitorPlay className="size-4" /> Live slideshow
+                </Link>
+              </Button>
             </div>
           </div>
         </section>
@@ -136,6 +143,27 @@ function EventAdmin() {
           <Button variant="secondary" className="rounded-full" onClick={toggleClosed}>
             {event.is_closed ? <LockOpen className="size-4" /> : <Lock className="size-4" />}
             {event.is_closed ? "Reopen album" : "Close album"}
+          </Button>
+          <Button
+            variant="secondary"
+            className="rounded-full"
+            disabled={!!zipping || !posts?.some((p) => p.media_url)}
+            onClick={async () => {
+              try {
+                setZipping("Preparing…");
+                await downloadAlbum(event!.name, posts ?? [], (done, total) =>
+                  setZipping(`${done} / ${total}`),
+                );
+                toast.success("Album downloaded");
+              } catch {
+                toast.error("Could not build the download");
+              } finally {
+                setZipping(null);
+              }
+            }}
+          >
+            {zipping ? <Loader2 className="size-4 animate-spin" /> : <Download className="size-4" />}
+            {zipping ? `Downloading ${zipping}` : "Download album"}
           </Button>
           <Button variant="destructive" className="rounded-full" onClick={deleteEvent}>
             <Trash2 className="size-4" /> Delete event

@@ -12,7 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as ACodeRouteImport } from './routes/a.$code'
+import { Route as SlideshowCodeRouteImport } from './routes/slideshow.$code'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
 import { Route as AuthenticatedDashboardNewRouteImport } from './routes/_authenticated/dashboard.new'
 import { Route as AuthenticatedDashboardEventIdRouteImport } from './routes/_authenticated/dashboard.event.$id'
@@ -31,9 +34,24 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HowItWorksRoute = HowItWorksRouteImport.update({
+  id: '/how-it-works',
+  path: '/how-it-works',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ACodeRoute = ACodeRouteImport.update({
   id: '/a/$code',
   path: '/a/$code',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SlideshowCodeRoute = SlideshowCodeRouteImport.update({
+  id: '/slideshow/$code',
+  path: '/slideshow/$code',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedDashboardIndexRoute =
@@ -58,7 +76,10 @@ const AuthenticatedDashboardEventIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/faq': typeof FaqRoute
+  '/how-it-works': typeof HowItWorksRoute
   '/a/$code': typeof ACodeRoute
+  '/slideshow/$code': typeof SlideshowCodeRoute
   '/dashboard/new': typeof AuthenticatedDashboardNewRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/dashboard/event/$id': typeof AuthenticatedDashboardEventIdRoute
@@ -66,7 +87,10 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/faq': typeof FaqRoute
+  '/how-it-works': typeof HowItWorksRoute
   '/a/$code': typeof ACodeRoute
+  '/slideshow/$code': typeof SlideshowCodeRoute
   '/dashboard/new': typeof AuthenticatedDashboardNewRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/dashboard/event/$id': typeof AuthenticatedDashboardEventIdRoute
@@ -76,7 +100,10 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/faq': typeof FaqRoute
+  '/how-it-works': typeof HowItWorksRoute
   '/a/$code': typeof ACodeRoute
+  '/slideshow/$code': typeof SlideshowCodeRoute
   '/_authenticated/dashboard/new': typeof AuthenticatedDashboardNewRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_authenticated/dashboard/event/$id': typeof AuthenticatedDashboardEventIdRoute
@@ -86,7 +113,10 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/faq'
+    | '/how-it-works'
     | '/a/$code'
+    | '/slideshow/$code'
     | '/dashboard/new'
     | '/dashboard/'
     | '/dashboard/event/$id'
@@ -94,7 +124,10 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/faq'
+    | '/how-it-works'
     | '/a/$code'
+    | '/slideshow/$code'
     | '/dashboard/new'
     | '/dashboard'
     | '/dashboard/event/$id'
@@ -103,7 +136,10 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/faq'
+    | '/how-it-works'
     | '/a/$code'
+    | '/slideshow/$code'
     | '/_authenticated/dashboard/new'
     | '/_authenticated/dashboard/'
     | '/_authenticated/dashboard/event/$id'
@@ -113,7 +149,10 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  FaqRoute: typeof FaqRoute
+  HowItWorksRoute: typeof HowItWorksRoute
   ACodeRoute: typeof ACodeRoute
+  SlideshowCodeRoute: typeof SlideshowCodeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -139,11 +178,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/how-it-works': {
+      id: '/how-it-works'
+      path: '/how-it-works'
+      fullPath: '/how-it-works'
+      preLoaderRoute: typeof HowItWorksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/a/$code': {
       id: '/a/$code'
       path: '/a/$code'
       fullPath: '/a/$code'
       preLoaderRoute: typeof ACodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/slideshow/$code': {
+      id: '/slideshow/$code'
+      path: '/slideshow/$code'
+      fullPath: '/slideshow/$code'
+      preLoaderRoute: typeof SlideshowCodeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/dashboard/': {
@@ -189,7 +249,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  FaqRoute: FaqRoute,
+  HowItWorksRoute: HowItWorksRoute,
   ACodeRoute: ACodeRoute,
+  SlideshowCodeRoute: SlideshowCodeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
