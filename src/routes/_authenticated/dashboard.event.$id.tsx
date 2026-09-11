@@ -28,6 +28,7 @@ function EventAdmin() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [qr, setQr] = useState<string | null>(null);
+  const [zipping, setZipping] = useState<string | null>(null);
 
   const { data: event } = useQuery({
     queryKey: ["event-admin", id],
@@ -127,6 +128,11 @@ function EventAdmin() {
               <Button asChild variant="secondary" className="rounded-full">
                 <Link to="/a/$code" params={{ code: event.code }}>
                   Open album
+                </Link>
+              </Button>
+              <Button asChild variant="secondary" className="rounded-full">
+                <Link to="/slideshow/$code" params={{ code: event.code }} target="_blank">
+                  <MonitorPlay className="size-4" /> Live slideshow
                 </Link>
               </Button>
             </div>
