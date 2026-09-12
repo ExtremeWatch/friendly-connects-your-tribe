@@ -45,6 +45,7 @@ function Landing() {
             <Link to="/auth">Sign in</Link>
           </Button>
         )}
+        </nav>
       </header>
 
       <main className="mx-auto max-w-5xl px-5">
