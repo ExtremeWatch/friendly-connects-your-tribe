@@ -81,6 +81,8 @@ function Faq() {
           <Link to="/dashboard/new">Create your album</Link>
         </Button>
       </main>
+
+      <SiteFooter />
     </div>
   );
 }

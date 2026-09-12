@@ -85,6 +85,8 @@ function HowItWorks() {
           </Button>
         </div>
       </main>
+
+      <SiteFooter />
     </div>
   );
 }
