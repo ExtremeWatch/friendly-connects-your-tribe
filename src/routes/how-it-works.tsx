@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Download, MonitorPlay, QrCode, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SiteHeader } from "@/components/site/SiteHeader";
+import { SiteFooter } from "@/components/site/SiteFooter";
 
 export const Route = createFileRoute("/how-it-works")({
   head: () => ({
@@ -48,14 +50,7 @@ const extras = [
 function HowItWorks() {
   return (
     <div className="min-h-screen bg-background">
-      <header className="mx-auto flex max-w-5xl items-center justify-between px-5 py-6">
-        <Link to="/" className="font-display text-xl font-semibold tracking-tight">
-          Tifkira
-        </Link>
-        <Button asChild variant="secondary" className="rounded-full">
-          <Link to="/dashboard">My events</Link>
-        </Button>
-      </header>
+      <SiteHeader />
 
       <main className="mx-auto max-w-5xl px-5 pb-20">
         <h1 className="mt-8 max-w-3xl font-display text-4xl leading-tight sm:text-5xl">
@@ -90,6 +85,8 @@ function HowItWorks() {
           </Button>
         </div>
       </main>
+
+      <SiteFooter />
     </div>
   );
 }

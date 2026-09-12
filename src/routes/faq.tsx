@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
+import { SiteHeader } from "@/components/site/SiteHeader";
+import { SiteFooter } from "@/components/site/SiteFooter";
 
 const faqs = [
   {
@@ -63,14 +65,7 @@ export const Route = createFileRoute("/faq")({
 function Faq() {
   return (
     <div className="min-h-screen bg-background">
-      <header className="mx-auto flex max-w-3xl items-center justify-between px-5 py-6">
-        <Link to="/" className="font-display text-xl font-semibold tracking-tight">
-          Tifkira
-        </Link>
-        <Button asChild variant="secondary" className="rounded-full">
-          <Link to="/how-it-works">How it works</Link>
-        </Button>
-      </header>
+      <SiteHeader />
 
       <main className="mx-auto max-w-3xl px-5 pb-20">
         <h1 className="mt-8 font-display text-4xl leading-tight sm:text-5xl">Common questions</h1>
@@ -86,6 +81,8 @@ function Faq() {
           <Link to="/dashboard/new">Create your album</Link>
         </Button>
       </main>
+
+      <SiteFooter />
     </div>
   );
 }
