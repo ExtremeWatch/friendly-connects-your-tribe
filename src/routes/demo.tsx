@@ -36,8 +36,8 @@ export const Route = createFileRoute("/demo")({
 type DemoPost = {
   id: string;
   kind: "photo" | "text";
-  src?: string;
-  caption?: string;
+  src?: string | undefined;
+  caption?: string | undefined;
   author: string;
   minutesAgo: number;
   likes: number;
