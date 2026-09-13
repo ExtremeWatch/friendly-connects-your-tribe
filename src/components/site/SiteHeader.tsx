@@ -20,6 +20,9 @@ export function SiteHeader() {
         <Button asChild variant="ghost" className="rounded-full">
           <Link to="/faq">FAQ</Link>
         </Button>
+        <Button asChild variant="ghost" className="rounded-full">
+          <Link to="/demo">Try it yourself</Link>
+        </Button>
         {user ? (
           <Button asChild variant="secondary" className="rounded-full">
             <Link to="/dashboard">My events</Link>
