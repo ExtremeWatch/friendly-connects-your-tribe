@@ -15,6 +15,9 @@ export function SiteFooter() {
           <Link to="/faq" className="hover:text-primary">
             FAQ
           </Link>
+          <Link to="/demo" className="hover:text-primary">
+            Try it yourself
+          </Link>
           <Link to="/contact" className="hover:text-primary">
             Contact
           </Link>

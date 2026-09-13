@@ -84,6 +84,9 @@ function Landing() {
               <Link to={user ? "/dashboard/new" : "/auth"}>Create your album</Link>
             </Button>
             <Button asChild size="lg" variant="secondary" className="rounded-full px-8">
+              <Link to="/demo">Try it yourself</Link>
+            </Button>
+            <Button asChild size="lg" variant="ghost" className="rounded-full px-8">
               <Link to="/how-it-works">See how it works</Link>
             </Button>
           </div>
