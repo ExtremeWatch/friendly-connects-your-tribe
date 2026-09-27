@@ -124,22 +124,42 @@ export function Composer({
       {files.length > 0 && (
         <div className="mb-3 flex flex-wrap gap-2">
           {files.map((f, i) => (
-            <span key={i} className="rounded-full bg-secondary px-3 py-1 text-xs text-secondary-foreground">
+            <span
+              key={i}
+              className="flex items-center gap-1 rounded-full bg-secondary px-3 py-1 text-xs text-secondary-foreground"
+            >
               {f.name.slice(0, 22)}
+              {!busy && (
+                <button
+                  type="button"
+                  aria-label={`Remove ${f.name}`}
+                  onClick={() => setFiles((prev) => prev.filter((_, j) => j !== i))}
+                >
+                  <X className="size-3" />
+                </button>
+              )}
             </span>
           ))}
         </div>
+      )}
+
+      {progress && (
+        <p className="mb-3 text-xs text-muted-foreground">
+          Uploading {progress.done + 1 > progress.total ? progress.total : progress.done + 1} of{" "}
+          {progress.total}…
+        </p>
       )}
 
       <div className="flex items-center justify-between gap-2">
         <input
           ref={inputRef}
           type="file"
-          accept="image/*,video/*"
+          accept="image/*,video/*,.heic,.heif,.mov"
           multiple
           className="hidden"
           onChange={(e) => pick(e.target.files)}
         />
+
         <Button type="button" variant="secondary" className="rounded-full" onClick={() => inputRef.current?.click()}>
           <ImagePlus className="size-4" />
           Photos & videos
