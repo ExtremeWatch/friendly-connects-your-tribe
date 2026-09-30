@@ -16,6 +16,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as UseCasesRouteImport } from './routes/use-cases'
 import { Route as ACodeRouteImport } from './routes/a.$code'
 import { Route as SlideshowCodeRouteImport } from './routes/slideshow.$code'
@@ -55,6 +56,11 @@ const FaqRoute = FaqRouteImport.update({
 const HowItWorksRoute = HowItWorksRouteImport.update({
   id: '/how-it-works',
   path: '/how-it-works',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const UseCasesRoute = UseCasesRouteImport.update({
@@ -98,6 +104,7 @@ export interface FileRoutesByFullPath {
   '/demo': typeof DemoRoute
   '/faq': typeof FaqRoute
   '/how-it-works': typeof HowItWorksRoute
+  '/pricing': typeof PricingRoute
   '/use-cases': typeof UseCasesRoute
   '/a/$code': typeof ACodeRoute
   '/slideshow/$code': typeof SlideshowCodeRoute
@@ -112,6 +119,7 @@ export interface FileRoutesByTo {
   '/demo': typeof DemoRoute
   '/faq': typeof FaqRoute
   '/how-it-works': typeof HowItWorksRoute
+  '/pricing': typeof PricingRoute
   '/use-cases': typeof UseCasesRoute
   '/a/$code': typeof ACodeRoute
   '/slideshow/$code': typeof SlideshowCodeRoute
@@ -128,6 +136,7 @@ export interface FileRoutesById {
   '/demo': typeof DemoRoute
   '/faq': typeof FaqRoute
   '/how-it-works': typeof HowItWorksRoute
+  '/pricing': typeof PricingRoute
   '/use-cases': typeof UseCasesRoute
   '/a/$code': typeof ACodeRoute
   '/slideshow/$code': typeof SlideshowCodeRoute
@@ -144,6 +153,7 @@ export interface FileRouteTypes {
     | '/demo'
     | '/faq'
     | '/how-it-works'
+    | '/pricing'
     | '/use-cases'
     | '/a/$code'
     | '/slideshow/$code'
@@ -158,6 +168,7 @@ export interface FileRouteTypes {
     | '/demo'
     | '/faq'
     | '/how-it-works'
+    | '/pricing'
     | '/use-cases'
     | '/a/$code'
     | '/slideshow/$code'
@@ -173,6 +184,7 @@ export interface FileRouteTypes {
     | '/demo'
     | '/faq'
     | '/how-it-works'
+    | '/pricing'
     | '/use-cases'
     | '/a/$code'
     | '/slideshow/$code'
@@ -189,6 +201,7 @@ export interface RootRouteChildren {
   DemoRoute: typeof DemoRoute
   FaqRoute: typeof FaqRoute
   HowItWorksRoute: typeof HowItWorksRoute
+  PricingRoute: typeof PricingRoute
   UseCasesRoute: typeof UseCasesRoute
   ACodeRoute: typeof ACodeRoute
   SlideshowCodeRoute: typeof SlideshowCodeRoute
@@ -243,6 +256,13 @@ declare module '@tanstack/react-router' {
       path: '/how-it-works'
       fullPath: '/how-it-works'
       preLoaderRoute: typeof HowItWorksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/use-cases': {
@@ -313,6 +333,7 @@ const rootRouteChildren: RootRouteChildren = {
   DemoRoute: DemoRoute,
   FaqRoute: FaqRoute,
   HowItWorksRoute: HowItWorksRoute,
+  PricingRoute: PricingRoute,
   UseCasesRoute: UseCasesRoute,
   ACodeRoute: ACodeRoute,
   SlideshowCodeRoute: SlideshowCodeRoute,

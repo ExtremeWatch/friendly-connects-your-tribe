@@ -12,9 +12,13 @@ export function SiteFooter() {
           <Link to="/use-cases" className="hover:text-primary">
             Occasions
           </Link>
+          <Link to="/pricing" className="hover:text-primary">
+            Pricing
+          </Link>
           <Link to="/faq" className="hover:text-primary">
             FAQ
           </Link>
+
           <Link to="/demo" className="hover:text-primary">
             Try it yourself
           </Link>
