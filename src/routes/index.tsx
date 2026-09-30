@@ -87,8 +87,12 @@ function Landing() {
               <Link to="/demo">Try it yourself</Link>
             </Button>
             <Button asChild size="lg" variant="ghost" className="rounded-full px-8">
+              <Link to="/pricing">See pricing</Link>
+            </Button>
+            <Button asChild size="lg" variant="ghost" className="rounded-full px-8">
               <Link to="/how-it-works">See how it works</Link>
             </Button>
+
           </div>
 
           <img
