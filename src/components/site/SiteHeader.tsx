@@ -18,8 +18,12 @@ export function SiteHeader() {
           <Link to="/use-cases">Occasions</Link>
         </Button>
         <Button asChild variant="ghost" className="rounded-full">
+          <Link to="/pricing">Pricing</Link>
+        </Button>
+        <Button asChild variant="ghost" className="rounded-full">
           <Link to="/faq">FAQ</Link>
         </Button>
+
         <Button asChild variant="ghost" className="rounded-full">
           <Link to="/demo">Try it yourself</Link>
         </Button>
