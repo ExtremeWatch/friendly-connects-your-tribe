@@ -1,0 +1,3 @@
+- [ ] Reorganize the host event dashboard into Home, Photos & Videos, and Event Settings.
+- [ ] Preserve existing sharing, moderation, downloads, and album status controls.
+- [ ] Verify the new workspace on desktop and mobile.
