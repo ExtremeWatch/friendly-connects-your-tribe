@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MediaImage, MediaVideo } from "@/components/album/Media";
+import { useSession } from "@/hooks/useSession";
 import type { EventRow, PostRow } from "@/components/album/types";
 
 type Section = "home" | "media" | "settings";
@@ -38,6 +39,7 @@ export const Route = createFileRoute("/_authenticated/dashboard/event/$id")({
 function EventAdmin() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
+  const { user } = useSession();
   const queryClient = useQueryClient();
   const [section, setSection] = useState<Section>("home");
   const [mediaFilter, setMediaFilter] = useState<MediaFilter>("published");
@@ -181,6 +183,8 @@ function EventAdmin() {
       </div>
       <div className="mt-auto border-t pt-5">
         <Button asChild variant="ghost" className="w-full justify-start text-muted-foreground"><Link to="/dashboard/new"><Plus /> New event</Link></Button>
+        {user?.email && <p className="mt-3 truncate px-3 text-xs text-muted-foreground" title={user.email}>{user.email}</p>}
+        <Button variant="ghost" className="w-full justify-start text-muted-foreground" onClick={async () => { await supabase.auth.signOut(); navigate({ to: "/", replace: true }); }}>Sign out</Button>
       </div>
     </div>
   );
