@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
-import { ArrowLeft, ArrowUpRight, CalendarDays, Check, Copy, Download, Eye, EyeOff, Heart, Home, Images, Loader2, Lock, LockOpen, Menu, MonitorPlay, Plus, Settings2, Trash2, Video } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, CalendarDays, Copy, Download, Eye, EyeOff, Heart, Home, Images, Loader2, Lock, LockOpen, Menu, MonitorPlay, Plus, Settings2, Trash2, Video } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { albumUrl } from "@/lib/event-code";
@@ -159,7 +159,7 @@ function EventAdmin() {
   const photoCount = published.filter((post) => post.kind === "photo").length;
   const videoCount = published.filter((post) => post.kind === "video").length;
 
-  const navigation = (
+  const navigation = () => (
     <div className="flex h-full flex-col">
       <Link to="/" className="font-display text-2xl font-semibold text-foreground">Tifkira<span className="text-primary">.</span></Link>
       <div className="mt-10">
@@ -187,13 +187,13 @@ function EventAdmin() {
 
   return (
     <div className="min-h-screen bg-background lg:flex">
-      <aside className="hidden w-64 shrink-0 border-r bg-sidebar px-5 py-7 lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col">{navigation}</aside>
+      <aside className="hidden w-64 shrink-0 border-r bg-sidebar px-5 py-7 lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col">{navigation()}</aside>
       <div className="min-w-0 flex-1">
         <header className="flex h-16 items-center justify-between gap-3 border-b bg-background px-4 sm:px-8 lg:px-10">
           <div className="flex min-w-0 items-center gap-3">
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild><Button size="icon" variant="ghost" aria-label="Open event menu" className="lg:hidden"><Menu /></Button></SheetTrigger>
-              <SheetContent side="left" className="flex flex-col bg-sidebar p-5"><SheetHeader><SheetTitle className="sr-only">Event menu</SheetTitle></SheetHeader>{navigation}</SheetContent>
+              <SheetContent side="left" className="flex flex-col bg-sidebar p-5"><SheetHeader><SheetTitle className="sr-only">Event menu</SheetTitle></SheetHeader>{navigation()}</SheetContent>
             </Sheet>
             <span className="truncate text-sm font-semibold">{event.name}</span>
             <span className={`hidden text-xs sm:inline ${event.is_closed ? "text-muted-foreground" : "text-primary"}`}>· {event.is_closed ? "Closed" : "Open"}</span>
