@@ -108,7 +108,7 @@ function EventAdmin() {
 
   async function toggleHidden(post: PostRow) {
     const { error } = await supabase.from("posts").update({ is_hidden: !post.is_hidden }).eq("id", post.id);
-    if (error) return toast.error("Could not update this post");
+    if (error) { toast.error("Could not update this post"); return; }
     queryClient.invalidateQueries({ queryKey: ["admin-posts", id] });
     toast.success(post.is_hidden ? "Post restored" : "Post hidden");
   }
@@ -116,7 +116,7 @@ function EventAdmin() {
   async function removePost(post: PostRow) {
     if (!window.confirm("Permanently delete this post?")) return;
     const { error } = await supabase.from("posts").delete().eq("id", post.id);
-    if (error) return toast.error("Could not delete this post");
+    if (error) { toast.error("Could not delete this post"); return; }
     queryClient.invalidateQueries({ queryKey: ["admin-posts", id] });
     toast.success("Post deleted");
   }
@@ -124,7 +124,7 @@ function EventAdmin() {
   async function toggleClosed() {
     if (!event) return;
     const { error } = await supabase.from("events").update({ is_closed: !event.is_closed }).eq("id", id);
-    if (error) return toast.error("Could not update the album");
+    if (error) { toast.error("Could not update the album"); return; }
     queryClient.invalidateQueries({ queryKey: ["event-admin", id] });
     queryClient.invalidateQueries({ queryKey: ["my-events"] });
     toast.success(event.is_closed ? "Album reopened" : "Album closed");
@@ -133,7 +133,7 @@ function EventAdmin() {
   async function deleteEvent() {
     if (!window.confirm("Delete this event and everything in it? This cannot be undone.")) return;
     const { error } = await supabase.from("events").delete().eq("id", id);
-    if (error) return toast.error("Could not delete the event");
+    if (error) { toast.error("Could not delete the event"); return; }
     queryClient.invalidateQueries({ queryKey: ["my-events"] });
     toast.success("Event deleted");
     navigate({ to: "/dashboard", replace: true });
