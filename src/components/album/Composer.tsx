@@ -21,22 +21,38 @@ export function Composer({
   eventId,
   guest,
   onPosted,
+  allowPhotos = true,
+  allowVideos = true,
+  allowText = true,
+  requireApproval = false,
 }: {
   eventId: string;
   guest: GuestIdentity;
   onPosted: () => void;
+  allowPhotos?: boolean;
+  allowVideos?: boolean;
+  allowText?: boolean;
+  requireApproval?: boolean;
 }) {
   const [files, setFiles] = useState<File[]>([]);
   const [caption, setCaption] = useState("");
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const allowMedia = allowPhotos || allowVideos;
+  const accept = [allowPhotos && "image/*,.heic,.heif", allowVideos && "video/*,.mov"].filter(Boolean).join(",");
+  const mediaLabel = allowPhotos && allowVideos ? "Photos & videos" : allowPhotos ? "Photos" : "Videos";
 
   function pick(list: FileList | null) {
     if (!list) return;
     const picked = Array.from(list).filter((f) => {
-      if (!kindOf(f)) {
+      const kind = kindOf(f);
+      if (!kind) {
         toast.error(`${f.name} is not a photo or video`);
+        return false;
+      }
+      if ((kind === "photo" && !allowPhotos) || (kind === "video" && !allowVideos)) {
+        toast.error(`The host isn't accepting ${kind}s for this album`);
         return false;
       }
       if (f.size > MAX_BYTES) {
