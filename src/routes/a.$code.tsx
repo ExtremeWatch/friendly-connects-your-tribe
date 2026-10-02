@@ -55,6 +55,7 @@ function AlbumPage() {
         .select("*")
         .eq("event_id", event!.id)
         .eq("is_hidden", false)
+        .eq("status", "published")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return (data ?? []) as PostRow[];
@@ -115,6 +116,10 @@ function AlbumPage() {
     return <CenterNote title="Album not found" body="Double-check the link or QR code from your host." />;
   }
 
+  const viewOnly = event.album_permission === "view_only";
+  const uploadOnly = event.album_permission === "upload_only";
+  const canPost = !event.is_closed && !viewOnly && (event.allow_photos || event.allow_videos || event.allow_text);
+
   return (
     <div className="min-h-screen bg-background pb-24">
       <EventHeader event={event} />
@@ -124,11 +129,19 @@ function AlbumPage() {
           <div className="mt-6 flex items-center gap-2 rounded-2xl border bg-secondary/60 px-4 py-3 text-sm text-secondary-foreground">
             <Lock className="size-4" /> This album is closed for new posts. Enjoy the memories!
           </div>
+        ) : !canPost ? (
+          <div className="mt-6 flex items-center gap-2 rounded-2xl border bg-secondary/60 px-4 py-3 text-sm text-secondary-foreground">
+            <Lock className="size-4" /> This album is view-only. Enjoy the memories!
+          </div>
         ) : guest ? (
           <div className="-mt-8 relative z-10">
             <Composer
               eventId={event.id}
               guest={guest}
+              allowPhotos={event.allow_photos}
+              allowVideos={event.allow_videos}
+              allowText={event.allow_text}
+              requireApproval={event.require_approval}
               onPosted={() => queryClient.invalidateQueries({ queryKey: ["posts", event.id] })}
             />
           </div>
@@ -136,6 +149,11 @@ function AlbumPage() {
           <JoinCard event={event} code={code} onJoined={setGuest} />
         )}
 
+        {uploadOnly ? (
+          <p className="mt-10 rounded-2xl border bg-card px-5 py-6 text-center text-sm text-muted-foreground">
+            The host is collecting photos privately — your uploads go straight to them.
+          </p>
+        ) : (
         <div className="mt-8 space-y-6">
           {postsQuery.isLoading && <CardSkeleton />}
           {!postsQuery.isLoading && posts.length === 0 && (
@@ -181,6 +199,7 @@ function AlbumPage() {
               ) : null}
 
               <div className="flex items-center gap-4 px-4 py-3">
+                {event.allow_likes && (
                 <button
                   type="button"
                   disabled={!guest}
@@ -192,10 +211,12 @@ function AlbumPage() {
                   />
                   {likeCount(post.id) || ""}
                 </button>
+                )}
               </div>
             </article>
           ))}
         </div>
+        )}
       </main>
 
       {lightbox !== null && lightbox >= 0 && (
@@ -204,6 +225,7 @@ function AlbumPage() {
           index={lightbox}
           onClose={() => setLightbox(null)}
           onIndexChange={setLightbox}
+          allowDownload={event.allow_guest_downloads}
         />
       )}
     </div>
