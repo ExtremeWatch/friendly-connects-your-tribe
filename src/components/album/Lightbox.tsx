@@ -1,6 +1,7 @@
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download, X } from "lucide-react";
 import { useEffect } from "react";
 import { MediaImage, MediaVideo } from "./Media";
+import { useSignedUrl } from "@/lib/media";
 import type { PostRow } from "./types";
 
 export function Lightbox({
@@ -8,13 +9,16 @@ export function Lightbox({
   index,
   onClose,
   onIndexChange,
+  allowDownload = false,
 }: {
   posts: PostRow[];
   index: number;
   onClose: () => void;
   onIndexChange: (next: number) => void;
+  allowDownload?: boolean;
 }) {
   const post = posts[index];
+  const url = useSignedUrl(allowDownload ? post?.media_url : null);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -29,15 +33,25 @@ export function Lightbox({
   if (!post) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-foreground/95 backdrop-blur">
+    <div
+      className="fixed inset-0 z-50 flex flex-col bg-foreground/95 backdrop-blur"
+      onContextMenu={allowDownload ? undefined : (e) => e.preventDefault()}
+    >
       <div className="flex items-center justify-between p-4 text-background">
         <div className="text-sm">
           <span className="font-semibold">{post.author_name}</span>
           {post.caption ? <span className="ml-2 opacity-80">{post.caption}</span> : null}
         </div>
-        <button onClick={onClose} aria-label="Close" className="rounded-full p-2 hover:bg-background/10">
-          <X className="size-5" />
-        </button>
+        <div className="flex items-center gap-1">
+          {allowDownload && url && (
+            <a href={url} download target="_blank" rel="noreferrer" aria-label="Download" className="rounded-full p-2 hover:bg-background/10">
+              <Download className="size-5" />
+            </a>
+          )}
+          <button onClick={onClose} aria-label="Close" className="rounded-full p-2 hover:bg-background/10">
+            <X className="size-5" />
+          </button>
+        </div>
       </div>
 
       <div className="relative flex flex-1 items-center justify-center overflow-hidden px-2 pb-6">

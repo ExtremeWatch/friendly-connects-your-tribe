@@ -16,36 +16,72 @@ export type Database = {
     Tables: {
       events: {
         Row: {
+          album_permission: string
+          allow_guest_downloads: boolean
+          allow_likes: boolean
+          allow_photos: boolean
+          allow_text: boolean
+          allow_videos: boolean
           code: string
           cover_url: string | null
           created_at: string
           event_date: string | null
+          event_type: string
           host_id: string
           id: string
           is_closed: boolean
           name: string
+          require_approval: boolean
+          slideshow_interval: number
+          slideshow_show_captions: boolean
+          slideshow_show_likes: boolean
+          slideshow_show_qr: boolean
           welcome_message: string | null
         }
         Insert: {
+          album_permission?: string
+          allow_guest_downloads?: boolean
+          allow_likes?: boolean
+          allow_photos?: boolean
+          allow_text?: boolean
+          allow_videos?: boolean
           code: string
           cover_url?: string | null
           created_at?: string
           event_date?: string | null
+          event_type?: string
           host_id: string
           id?: string
           is_closed?: boolean
           name: string
+          require_approval?: boolean
+          slideshow_interval?: number
+          slideshow_show_captions?: boolean
+          slideshow_show_likes?: boolean
+          slideshow_show_qr?: boolean
           welcome_message?: string | null
         }
         Update: {
+          album_permission?: string
+          allow_guest_downloads?: boolean
+          allow_likes?: boolean
+          allow_photos?: boolean
+          allow_text?: boolean
+          allow_videos?: boolean
           code?: string
           cover_url?: string | null
           created_at?: string
           event_date?: string | null
+          event_type?: string
           host_id?: string
           id?: string
           is_closed?: boolean
           name?: string
+          require_approval?: boolean
+          slideshow_interval?: number
+          slideshow_show_captions?: boolean
+          slideshow_show_likes?: boolean
+          slideshow_show_qr?: boolean
           welcome_message?: string | null
         }
         Relationships: []
@@ -126,6 +162,7 @@ export type Database = {
           is_hidden: boolean
           kind: string
           media_url: string | null
+          status: string
         }
         Insert: {
           author_name: string
@@ -137,6 +174,7 @@ export type Database = {
           is_hidden?: boolean
           kind: string
           media_url?: string | null
+          status?: string
         }
         Update: {
           author_name?: string
@@ -148,6 +186,7 @@ export type Database = {
           is_hidden?: boolean
           kind?: string
           media_url?: string | null
+          status?: string
         }
         Relationships: [
           {
