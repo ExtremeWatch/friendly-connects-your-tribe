@@ -67,6 +67,10 @@ export function Composer({
 
   async function submit() {
     if (!files.length && !caption.trim()) return;
+    if (!files.length && !allowText) {
+      toast.error("Please add a photo or video");
+      return;
+    }
     setBusy(true);
     try {
       if (files.length === 0) {
@@ -117,7 +121,7 @@ export function Composer({
       setFiles([]);
       setCaption("");
       onPosted();
-      toast.success("Added to the album");
+      toast.success(requireApproval ? "Sent! It will appear once the host approves it" : "Added to the album");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -132,7 +136,7 @@ export function Composer({
       <Textarea
         value={caption}
         onChange={(e) => setCaption(e.target.value)}
-        placeholder={`Say something, ${guest.name.split(" ")[0]}…`}
+        placeholder={allowText ? `Say something, ${guest.name.split(" ")[0]}…` : "Add a caption (optional)…"}
         rows={2}
         className="resize-none border-0 bg-transparent px-0 text-base shadow-none focus-visible:ring-0"
       />
@@ -170,20 +174,22 @@ export function Composer({
         <input
           ref={inputRef}
           type="file"
-          accept="image/*,video/*,.heic,.heif,.mov"
+          accept={accept}
           multiple
           className="hidden"
           onChange={(e) => pick(e.target.files)}
         />
 
-        <Button type="button" variant="secondary" className="rounded-full" onClick={() => inputRef.current?.click()}>
-          <ImagePlus className="size-4" />
-          Photos & videos
-        </Button>
+        {allowMedia ? (
+          <Button type="button" variant="secondary" className="rounded-full" onClick={() => inputRef.current?.click()}>
+            <ImagePlus className="size-4" />
+            {mediaLabel}
+          </Button>
+        ) : <span />}
         <Button
           type="button"
           className="rounded-full"
-          disabled={busy || (!files.length && !caption.trim())}
+          disabled={busy || (!files.length && (!caption.trim() || !allowText))}
           onClick={submit}
         >
           {busy ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
