@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
-import { ArrowLeft, ArrowUpRight, CalendarDays, Copy, Download, Eye, EyeOff, Heart, Home, Images, Loader2, Lock, LockOpen, Menu, MonitorPlay, Plus, Settings2, Trash2, Video } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Check, Copy, Download, Eye, EyeOff, Heart, Home, Images, Loader2, Menu, MonitorPlay, Plus, Settings2, Trash2, Video } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { albumUrl } from "@/lib/event-code";
@@ -11,11 +11,12 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MediaImage, MediaVideo } from "@/components/album/Media";
+import { EventSettings } from "@/components/dashboard/EventSettings";
 import { useSession } from "@/hooks/useSession";
 import type { EventRow, PostRow } from "@/components/album/types";
 
 type Section = "home" | "media" | "settings";
-type MediaFilter = "published" | "hidden";
+type MediaFilter = "published" | "pending" | "hidden";
 const sections = [
   { key: "home", label: "Home", icon: Home },
   { key: "media", label: "Photos & videos", icon: Images },
@@ -113,6 +114,13 @@ function EventAdmin() {
     toast.success(post.is_hidden ? "Post restored" : "Post hidden");
   }
 
+  async function approvePost(post: PostRow) {
+    const { error } = await supabase.from("posts").update({ status: "published" }).eq("id", post.id);
+    if (error) { toast.error("Could not approve this post"); return; }
+    queryClient.invalidateQueries({ queryKey: ["admin-posts", id] });
+    toast.success("Post approved");
+  }
+
   async function removePost(post: PostRow) {
     if (!window.confirm("Permanently delete this post?")) return;
     const { error } = await supabase.from("posts").delete().eq("id", post.id);
@@ -155,9 +163,10 @@ function EventAdmin() {
   if (eventLoading) return <div className="p-10 text-center text-muted-foreground">Opening event…</div>;
   if (eventError || !event) return <div className="p-10 text-center text-muted-foreground">This event could not be found. <Link to="/dashboard" className="text-primary underline">Back to my events</Link></div>;
 
-  const published = posts?.filter((post) => !post.is_hidden) ?? [];
+  const published = posts?.filter((post) => !post.is_hidden && post.status !== "pending") ?? [];
+  const pending = posts?.filter((post) => !post.is_hidden && post.status === "pending") ?? [];
   const hidden = posts?.filter((post) => post.is_hidden) ?? [];
-  const shownPosts = mediaFilter === "published" ? published : hidden;
+  const shownPosts = mediaFilter === "published" ? published : mediaFilter === "pending" ? pending : hidden;
   const photoCount = published.filter((post) => post.kind === "photo").length;
   const videoCount = published.filter((post) => post.kind === "video").length;
 
@@ -238,27 +247,17 @@ function EventAdmin() {
 
           {section === "media" && <>
             <div className="flex flex-wrap items-end justify-between gap-4"><div><p className="mb-2 text-xs font-bold uppercase text-primary">Content library</p><h1 className="text-3xl sm:text-4xl">Photos & videos</h1><p className="mt-2 text-sm text-muted-foreground">Review everything shared in your album, including messages.</p></div><Button variant="outline" disabled={!!zipping || !posts?.some((post) => post.media_url)} onClick={saveAlbum}>{zipping ? <Loader2 className="animate-spin" /> : <Download />}{zipping ? `Downloading ${zipping}` : "Download album"}</Button></div>
-            <div className="mt-8 flex gap-2 border-b pb-3"><Button size="sm" variant={mediaFilter === "published" ? "default" : "ghost"} onClick={() => setMediaFilter("published")}>Published ({published.length})</Button><Button size="sm" variant={mediaFilter === "hidden" ? "default" : "ghost"} onClick={() => setMediaFilter("hidden")}>Hidden ({hidden.length})</Button></div>
+            <div className="mt-8 flex flex-wrap gap-2 border-b pb-3"><Button size="sm" variant={mediaFilter === "published" ? "default" : "ghost"} onClick={() => setMediaFilter("published")}>Published ({published.length})</Button><Button size="sm" variant={mediaFilter === "pending" ? "default" : "ghost"} onClick={() => setMediaFilter("pending")}>Needs approval ({pending.length})</Button><Button size="sm" variant={mediaFilter === "hidden" ? "default" : "ghost"} onClick={() => setMediaFilter("hidden")}>Hidden ({hidden.length})</Button></div>
             {postsError && <p className="py-8 text-destructive">Could not load posts.</p>}
             {!posts && !postsError && <p className="py-8 text-muted-foreground">Loading posts…</p>}
-            {posts && shownPosts.length === 0 && <p className="py-16 text-center text-muted-foreground">{mediaFilter === "hidden" ? "No hidden posts." : "Nothing shared yet."}</p>}
+            {posts && shownPosts.length === 0 && <p className="py-16 text-center text-muted-foreground">{mediaFilter === "hidden" ? "No hidden posts." : mediaFilter === "pending" ? (event.require_approval ? "Nothing waiting for approval." : "Manual approval is off — turn it on in Event settings.") : "Nothing shared yet."}</p>}
             <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{shownPosts.map((post) => <article key={post.id} className="min-w-0 overflow-hidden border bg-card">
               <div className="flex aspect-4/3 items-center justify-center overflow-hidden bg-muted">{post.kind === "photo" && <MediaImage path={post.media_url} alt={post.caption ?? `Photo by ${post.author_name}`} className="size-full object-cover" />}{post.kind === "video" && <MediaVideo path={post.media_url} className="size-full object-contain" />}{post.kind === "text" && <p className="max-h-full overflow-auto px-6 text-center font-display text-xl">{post.caption}</p>}</div>
-              <div className="p-4"><p className="text-sm font-semibold">{post.author_name}</p><p className="mt-1 truncate text-sm text-muted-foreground">{post.caption || post.kind} · {new Date(post.created_at).toLocaleDateString()}</p><div className="mt-4 flex items-center gap-2 border-t pt-3"><Button size="sm" variant="outline" onClick={() => toggleHidden(post)}>{post.is_hidden ? <Eye /> : <EyeOff />}{post.is_hidden ? "Restore" : "Hide"}</Button><Button size="icon" variant="ghost" aria-label={`Delete post by ${post.author_name}`} title="Delete post" className="ml-auto text-destructive" onClick={() => removePost(post)}><Trash2 /></Button></div></div>
+              <div className="p-4"><p className="text-sm font-semibold">{post.author_name}</p><p className="mt-1 truncate text-sm text-muted-foreground">{post.caption || post.kind} · {new Date(post.created_at).toLocaleDateString()}</p><div className="mt-4 flex items-center gap-2 border-t pt-3">{post.status === "pending" && !post.is_hidden ? <Button size="sm" onClick={() => approvePost(post)}><Check /> Approve</Button> : <Button size="sm" variant="outline" onClick={() => toggleHidden(post)}>{post.is_hidden ? <Eye /> : <EyeOff />}{post.is_hidden ? "Restore" : "Hide"}</Button>}<Button size="icon" variant="ghost" aria-label={`Delete post by ${post.author_name}`} title="Delete post" className="ml-auto text-destructive" onClick={() => removePost(post)}><Trash2 /></Button></div></div>
             </article>)}</div>
           </>}
 
-          {section === "settings" && <>
-            <p className="mb-2 text-xs font-bold uppercase text-primary">Manage event</p><h1 className="text-3xl sm:text-4xl">Event settings</h1><p className="mt-2 text-sm text-muted-foreground">Your event details and album status.</p>
-            <div className="mt-9 max-w-3xl divide-y border-y">
-              <div className="grid gap-1 py-5 sm:grid-cols-[12rem_1fr]"><span className="flex items-center gap-2 text-sm text-muted-foreground"><Images className="size-4" /> Event name</span><span className="font-medium">{event.name}</span></div>
-              <div className="grid gap-1 py-5 sm:grid-cols-[12rem_1fr]"><span className="flex items-center gap-2 text-sm text-muted-foreground"><CalendarDays className="size-4" /> Event date</span><span className="font-medium">{event.event_date || "Not set"}</span></div>
-              <div className="grid gap-1 py-5 sm:grid-cols-[12rem_1fr]"><span className="text-sm text-muted-foreground">Welcome message</span><span className="whitespace-pre-wrap font-medium">{event.welcome_message || "Not set"}</span></div>
-              <div className="grid gap-1 py-5 sm:grid-cols-[12rem_1fr]"><span className="text-sm text-muted-foreground">Event code</span><span className="font-mono text-sm font-medium">{event.code}</span></div>
-            </div>
-            <section className="mt-12 max-w-3xl border-t pt-6"><h2 className="text-2xl">Album access</h2><p className="mt-2 text-sm text-muted-foreground">{event.is_closed ? "Guests can browse, but cannot add new posts." : "Guests can add photos, videos and messages."}</p><Button className="mt-5" variant="outline" onClick={toggleClosed}>{event.is_closed ? <LockOpen /> : <Lock />}{event.is_closed ? "Reopen album" : "Close album"}</Button></section>
-            <section className="mt-12 max-w-3xl border-t pt-6"><h2 className="text-2xl">Delete event</h2><p className="mt-2 text-sm text-muted-foreground">This permanently deletes the event and its posts. This cannot be undone.</p><Button className="mt-5" variant="destructive" onClick={deleteEvent}><Trash2 /> Delete event</Button></section>
-          </>}
+          {section === "settings" && <EventSettings event={event} onToggleClosed={toggleClosed} onDelete={deleteEvent} />}
         </main>
       </div>
     </div>
