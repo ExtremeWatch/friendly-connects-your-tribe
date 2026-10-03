@@ -10,6 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { EventRow } from "@/components/album/types";
+import { CustomLink } from "@/components/dashboard/CustomLink";
 
 type Tab = "general" | "moderation" | "wall";
 const tabs: { key: Tab; label: string }[] = [
@@ -118,7 +119,7 @@ export function EventSettings({ event, onToggleClosed, onDelete }: { event: Even
                 </Select>
               </div>
               <div className="sm:col-span-2"><Label htmlFor="ev-welcome">Welcome message</Label><Textarea id="ev-welcome" className="mt-2" rows={3} value={welcome} onChange={(e) => setWelcome(e.target.value)} maxLength={500} placeholder="A few words guests see when they open the album" /></div>
-              <div className="sm:col-span-2 text-sm text-muted-foreground">Event code: <span className="font-mono text-foreground">{event.code}</span></div>
+              <CustomLink event={event} />
             </div>
             <Button className="mt-6" onClick={saveGeneral} disabled={saving}><Save /> Save details</Button>
 
