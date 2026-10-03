@@ -8,7 +8,6 @@ import { albumUrl } from "@/lib/event-code";
 import { MediaImage, MediaVideo } from "@/components/album/Media";
 import type { EventRow, PostRow } from "@/components/album/types";
 
-const INTERVAL = 7000;
 
 export const Route = createFileRoute("/slideshow/$code")({
   head: () => ({
@@ -49,12 +48,14 @@ function SlideshowPage() {
         .select("*")
         .eq("event_id", event!.id)
         .eq("is_hidden", false)
+        .eq("status", "published")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return (data ?? []) as PostRow[];
     },
   });
 
+  const INTERVAL = (event?.slideshow_interval ?? 6) * 1000;
   const slides = useMemo(() => (posts ?? []).filter((p) => p.kind !== "text"), [posts]);
 
   useEffect(() => {
@@ -74,7 +75,7 @@ function SlideshowPage() {
     if (slides.length < 2) return;
     const timer = window.setInterval(() => setIndex((i) => (i + 1) % slides.length), INTERVAL);
     return () => window.clearInterval(timer);
-  }, [slides.length]);
+  }, [slides.length, INTERVAL]);
 
   useEffect(() => {
     if (index >= slides.length) setIndex(0);
@@ -86,6 +87,14 @@ function SlideshowPage() {
       .then(setQr)
       .catch(() => setQr(null));
   }, [event?.code, event]);
+
+  if (event === null) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-foreground text-background">
+        <p className="font-display text-2xl">This slideshow could not be found.</p>
+      </div>
+    );
+  }
 
   if (!event) {
     return (
@@ -125,17 +134,19 @@ function SlideshowPage() {
       <div className="flex w-full items-end justify-between gap-6 px-8 pb-8">
         <div className="min-w-0">
           <p className="font-display text-3xl leading-tight">{event.name}</p>
-          {current ? (
+          {current && event.slideshow_show_captions ? (
             <p className="mt-1 truncate text-lg opacity-80">
               {current.caption ? `${current.caption} — ` : ""}
               {current.author_name}
             </p>
           ) : null}
         </div>
+        {event.slideshow_show_qr && (
         <div className="shrink-0 text-center">
           {qr ? <img src={qr} alt="Scan to join the album" className="size-28 rounded-2xl bg-background p-1" /> : null}
           <p className="mt-1 text-xs opacity-70">Scan to add your photos</p>
         </div>
+        )}
       </div>
 
       {slides.length > 1 && (
