@@ -26,8 +26,8 @@ const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&
 function buildHtml(opts: { format: Format; theme: Theme; title: string; headline: string; steps: string; qr: string; link: string }) {
   const f = formats.find((x) => x.key === opts.format)!;
   const t = themes[opts.theme];
-  const scale = opts.format === "poster" ? 1.6 : 1;
-  const qrSize = opts.format === "poster" ? 110 : 52;
+  const scale = opts.format === "poster" ? 2.4 : 1;
+  const qrSize = opts.format === "poster" ? 130 : 52;
   const panel = `<div class="panel">
     <p class="title">${esc(opts.title)}</p>
     <h1>${esc(opts.headline)}</h1>
