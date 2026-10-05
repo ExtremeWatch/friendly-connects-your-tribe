@@ -12,6 +12,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MediaImage, MediaVideo } from "@/components/album/Media";
 import { EventSettings } from "@/components/dashboard/EventSettings";
+import { PrintCards } from "@/components/dashboard/PrintCards";
 import { useSession } from "@/hooks/useSession";
 import type { EventRow, PostRow } from "@/components/album/types";
 
@@ -236,7 +237,10 @@ function EventAdmin() {
                   {qr ? <img src={qr} alt="QR code for the guest album" className="mx-auto size-36 shrink-0 bg-card" /> : <div className="mx-auto size-36 shrink-0 animate-pulse bg-muted" />}
                   <div className="min-w-0 flex-1"><p className="mb-2 text-xs font-bold uppercase text-muted-foreground">Guest link</p><p className="break-all text-sm">{link}</p><div className="mt-4 flex flex-wrap gap-2"><Button size="sm" onClick={() => copyLink(link)}><Copy /> Copy link</Button><Button asChild size="sm" variant="outline"><Link to="/a/$code" params={{ code: event.code }} target="_blank">Open <ArrowUpRight /></Link></Button></div></div>
                 </div>
-                {qr && <Button asChild variant="ghost" className="mt-3 px-0 text-primary"><a href={qr} download={`${event.code}-qr.png`}><Download /> Download QR code</a></Button>}
+                <div className="mt-3 flex flex-wrap items-center gap-3">
+                  <PrintCards eventName={event.name} link={link} />
+                  {qr && <Button asChild variant="ghost" className="px-0 text-primary"><a href={qr} download={`${event.code}-qr.png`}><Download /> Download QR code</a></Button>}
+                </div>
               </section>
               <section className="min-w-0 border-t-2 border-accent pt-5">
                 <div className="mb-5 flex items-start gap-3"><MonitorPlay className="mt-1 size-5 text-primary" /><div><h2 className="text-2xl">Live photo wall</h2><p className="mt-1 text-sm text-muted-foreground">Show guest posts as they arrive on a big screen.</p></div></div>
