@@ -5,6 +5,7 @@ import { useSession } from "@/hooks/useSession";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import heroImage from "@/assets/hero-celebration.jpg";
+import { DemoDrawer } from "@/components/site/DemoDrawer";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -103,9 +104,13 @@ function Landing() {
             <Button asChild size="lg" className="rounded-full px-8">
               <Link to={user ? "/dashboard/new" : "/auth"}>Create your album</Link>
             </Button>
-            <Button asChild size="lg" variant="secondary" className="rounded-full px-8">
-              <Link to="/demo">Try live demo</Link>
-            </Button>
+            <DemoDrawer>
+              {(open) => (
+                <Button size="lg" variant="secondary" className="rounded-full px-8" onClick={open}>
+                  Try live demo
+                </Button>
+              )}
+            </DemoDrawer>
           </div>
           <ul className="mt-6 flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
             {["No app to download", "Scan the table QR", "Live photo wall"].map((t) => (
